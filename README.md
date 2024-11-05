@@ -1,49 +1,57 @@
 # WAV to FLAC Audio Conversion Service
 
-## Project Overview
-A Go-based backend service for real-time conversion of WAV audio streams to FLAC format, with support for WebSocket streaming.
+## Overview
 
-## Prerequisites
-- Go 1.19 or later
-- FFmpeg (for audio conversion)
-- Docker (optional for containerization)
+This project is a robust backend service built in Go that converts WAV audio streams to FLAC format in real-time. The service utilizes WebSockets for real-time streaming of converted audio data back to the client. It is designed to efficiently handle multiple simultaneous audio streams while ensuring minimal latency and high fidelity in the conversion process.
 
-## Project Structure
-- `cmd/server`: Entry point for the application.
-- `internal`: Contains core logic, such as audio conversion and WebSocket handling.
-- `test`: Test files for conversion logic and WebSocket connections.
+## Features
 
-## Installation
+- Real-time conversion of WAV audio streams to FLAC format.
+- Streaming of converted FLAC data back to the client via WebSockets.
+- API documentation using Swagger.
+- Efficient handling of concurrent audio streams.
+- Error handling for streaming and conversion processes.
 
-1. **Clone the repository**:
-    ```bash
-    git clone https://github.com/yourusername/wav-to-flac-converter.git
-    cd wav-to-flac-converter
-    ```
+## Technologies Used
 
-2. **Install FFmpeg** (if not using Docker):
-    ```bash
-    sudo apt update && sudo apt install -y ffmpeg
-    ```
+- Go (Golang)
+- Gin (Web Framework)
+- WebSockets
+- Swagger (API Documentation)
+- FFmpeg (for audio processing)
 
-3. **Run the server**:
-    ```bash
-    go run cmd/server/main.go
-    ```
 
-4. **Run tests**:
-    ```bash
-    go test ./test/...
-    ```
+## Setup Instructions
 
-## Usage
+### Prerequisites
 
-- The WebSocket endpoint is available at `ws://localhost:8080/ws`.
-- Stream WAV data to the endpoint, and you will receive FLAC data in real time.
+- Go 1.18 or higher
+- Docker (optional, for containerization)
+- FFmpeg (ensure it is installed and accessible in your system's PATH)
 
-## Docker
+### Installation
 
-Build and run the project in Docker:
-```bash
-docker build -t wav-to-flac-converter .
-docker run -p 8080:8080 wav-to-flac-converter
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/yourusername/audio_conversion.git
+   cd audio_conversion
+
+2. Install the required Go modules:
+
+    go mod tidy
+
+### Running the Application
+
+    go run main.go
+
+The server will start on http://localhost:8080.
+
+- Accessing Swagger Documentation
+    Open your browser and navigate to http://localhost:8080/swagger/index.html to view the API documentation.
+
+### API Endpoints
+    WebSocket Connection
+    Endpoint: ws://localhost:8080/ws
+    Method: GET
+    Description: Establish a WebSocket connection to send WAV audio data and receive the converted FLAC audio data in real-time.
