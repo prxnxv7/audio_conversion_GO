@@ -1,0 +1,22 @@
+basePath: /
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a simple audio conversion API.
+  title: Audio Conversion API
+  version: "1.0"
+paths:
+  /convert:
+    post:
+      consumes:
+      - audio/wav
+      description: Convert incoming WAV audio stream to FLAC format
+      produces:
+      - audio/flac
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+      summary: Convert WAV to FLAC
+swagger: "2.0"

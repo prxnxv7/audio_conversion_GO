@@ -1,12 +1,14 @@
 package router
 
 import (
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/websocket/v2"
-
 	"audio_conversion/internal/handler"
+
+	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+   	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func SetupRoutes(app *fiber.App) {
-	app.Get("/ws", websocket.New(handler.WebSocketConnection))
+func SetupRoutes(r *gin.Engine) {
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+    r.GET("/ws", handler.WebSocketConnection)
 }

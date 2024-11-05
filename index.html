@@ -18,7 +18,6 @@
             const flacData = event.data;
             console.log('Received FLAC data:', flacData);
 
-            // Save the received FLAC data to a file (optional)
             const blob = new Blob([flacData], { type: 'audio/flac' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');

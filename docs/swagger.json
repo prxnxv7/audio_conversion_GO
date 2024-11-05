@@ -1,0 +1,33 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a simple audio conversion API.",
+        "title": "Audio Conversion API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/convert": {
+            "post": {
+                "description": "Convert incoming WAV audio stream to FLAC format",
+                "consumes": [
+                    "audio/wav"
+                ],
+                "produces": [
+                    "audio/flac"
+                ],
+                "summary": "Convert WAV to FLAC",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "file"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

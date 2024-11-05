@@ -2,15 +2,14 @@ package test
 
 import (
     "testing"
-    "github.com/gofiber/fiber/v2"
-    "github.com/gofiber/websocket/v2"
-
-    "audio_conversion/internal/handler"
+    "github.com/gin-gonic/gin"
+    "github.com/gorilla/websocket"
     "audio_conversion/internal/router"
+    "net/http/httptest"
 )
 
-func setupTestApp() *fiber.App {
-    app := fiber.New()
+func setupTestApp() *gin.Engine {
+    app := gin.Default()
     router.SetupRoutes(app)
     return app
 }
@@ -18,5 +17,14 @@ func setupTestApp() *fiber.App {
 func TestWebSocketConnection(t *testing.T) {
     app := setupTestApp()
 
-    app.Get("/ws", websocket.New(handler.WebSocketConnection))
+    ts := httptest.NewServer(app)
+    defer ts.Close()
+
+    url := "ws" + ts.URL[4:] + "/ws" 
+    conn, _, err := websocket.DefaultDialer.Dial(url, nil)
+    if err != nil {
+        t.Fatalf("Failed to connect to WebSocket: %v", err)
+    }
+    defer conn.Close()
+
 }

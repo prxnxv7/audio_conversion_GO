@@ -1,42 +1,39 @@
 package handler
 
 import (
-    "log"
-
-    "github.com/gofiber/fiber/v2"
-    "github.com/gofiber/websocket/v2"
     "audio_conversion/internal/audio"
+    "github.com/gin-gonic/gin"
+    "github.com/gorilla/websocket"
+    "net/http"
 )
 
-func WebSocketHandler(c *fiber.Ctx) error {
-    if websocket.IsWebSocketUpgrade(c) {
-        c.Locals("allowed", true)
-        return c.Next()
-    }
-    return fiber.ErrUpgradeRequired
+var upgrader = websocket.Upgrader{
+    CheckOrigin: func(r *http.Request) bool {
+        return true
+    },
 }
 
-func WebSocketConnection(c *websocket.Conn) {
+func WebSocketConnection(c *gin.Context) {
+    conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+    if err != nil {
+        return
+    }
+    defer conn.Close()
+
     for {
-        messageType, data, err := c.ReadMessage()
+        _, wavData, err := conn.ReadMessage()
         if err != nil {
-            log.Println("Error reading message:", err)
             break
         }
 
-        if messageType == websocket.BinaryMessage {
-            // Convert WAV data to FLAC
-            flacData, err := audio.ConvertWAVToFLAC(data)
-            if err != nil {
-                log.Println("Error converting WAV to FLAC:", err)
-                break
-            }
+        flacData, err := audio.ConvertWAVToFLAC(wavData)
+        if err != nil {
+            continue
+        }
 
-            // Send the FLAC data back via WebSocket
-            if err := c.WriteMessage(websocket.BinaryMessage, flacData); err != nil {
-                log.Println("Error writing message:", err)
-                break
-            }
+        err = conn.WriteMessage(websocket.BinaryMessage, flacData)
+        if err != nil {
+            break
         }
     }
 }
