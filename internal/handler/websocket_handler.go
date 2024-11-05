@@ -25,12 +25,14 @@ func WebSocketConnection(c *websocket.Conn) {
         }
 
         if messageType == websocket.BinaryMessage {
-            flacData, err := audio.ConvertWavToFlac(data)
+            // Convert WAV data to FLAC
+            flacData, err := audio.ConvertWAVToFLAC(data)
             if err != nil {
                 log.Println("Error converting WAV to FLAC:", err)
                 break
             }
 
+            // Send the FLAC data back via WebSocket
             if err := c.WriteMessage(websocket.BinaryMessage, flacData); err != nil {
                 log.Println("Error writing message:", err)
                 break
