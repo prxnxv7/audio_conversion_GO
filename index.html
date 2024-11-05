@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WAV to FLAC Test</title>
+</head>
+<body>
+    <h1>WAV to FLAC Conversion Test</h1>
+    <input type="file" id="audioFile" accept=".wav">
+    <button id="sendAudio">Send Audio</button>
+    <script>
+        const ws = new WebSocket('ws://localhost:8080/ws');
+        ws.binaryType = 'arraybuffer';
+
+        ws.onopen = () => console.log('WebSocket connection established');
+        ws.onmessage = (event) => {
+            const flacData = event.data;
+            console.log('Received FLAC data:', flacData);
+
+            // Save the received FLAC data to a file (optional)
+            const blob = new Blob([flacData], { type: 'audio/flac' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'converted_audio.flac';
+            a.click();
+        };
+
+        document.getElementById('sendAudio').onclick = () => {
+            const fileInput = document.getElementById('audioFile');
+            const file = fileInput.files[0];
+
+            if (ws.readyState === WebSocket.OPEN) {
+                if(file){
+                    const reader = new FileReader();
+                    reader.onload = () => ws.send(reader.result);
+                    reader.readAsArrayBuffer(file);
+                }
+                else{
+                    alert("Please select a valid file")
+                }
+            } else {
+                alert('Please ensure WebSocket is connected.');
+            }
+        };
+    </script>
+</body>
+</html>
