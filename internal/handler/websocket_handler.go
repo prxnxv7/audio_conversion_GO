@@ -1,10 +1,12 @@
 package handler
 
 import (
-    "audio_conversion/internal/audio"
-    "github.com/gin-gonic/gin"
-    "github.com/gorilla/websocket"
-    "net/http"
+	"audio_conversion/internal/audio"
+	"fmt"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/gorilla/websocket"
 )
 
 var upgrader = websocket.Upgrader{
@@ -28,6 +30,7 @@ func WebSocketConnection(c *gin.Context) {
 
         flacData, err := audio.ConvertWAVToFLAC(wavData)
         if err != nil {
+            fmt.Println("Error converting WAV to FLAC:", err)
             continue
         }
 
